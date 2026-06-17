@@ -144,6 +144,37 @@
     .day-content { display: none; border-top: 1px solid var(--border); }
     .day-block.open .day-content { display: block; }
 
+    /* ---- Pausentag ---- */
+    .day-block.rest-day { opacity: .7; }
+    .day-block.rest-day .day-header { cursor: default; }
+    .day-block.rest-day .day-header:hover { background: none; }
+    .rest-label { color: var(--muted); font-style: italic; }
+    .rest-hint {
+      padding: 10px var(--gap) 14px;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      line-height: 1.5;
+    }
+
+    /* ---- Warm-up-Block ---- */
+    .warmup-section { border-bottom: 1px solid var(--border); }
+    .warmup-toggle {
+      display: flex; align-items: center; gap: 7px;
+      width: 100%; padding: 11px var(--gap);
+      background: none; border: none; color: var(--muted);
+      font-size: 13px; font-family: inherit; cursor: pointer;
+      text-align: left;
+    }
+    .warmup-toggle:hover { color: var(--text); }
+    .warmup-chevron { margin-left: auto; transition: transform .2s; }
+    .warmup-section.open .warmup-chevron { transform: rotate(180deg); }
+    .warmup-list {
+      margin: 0; padding: 0 var(--gap) 12px calc(var(--gap) + 16px);
+      list-style: disc;
+    }
+    .warmup-list li { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
     /* ---- Übung ---- */
     .exercise-item { border-bottom: 1px solid var(--border); padding: 14px var(--gap); }
     .exercise-item:last-child { border-bottom: none; }
@@ -491,8 +522,8 @@
 </nav>
 
 <!-- Skripte -->
-<script src="state.js?v=2"></script>
-<script src="calc.js?v=2"></script>
-<script src="app.js?v=2"></script>
+<script src="state.js?v=3"></script>
+<script src="calc.js?v=3"></script>
+<script src="app.js?v=3"></script>
 </body>
 </html>
