@@ -269,7 +269,32 @@ function renderTraining() {
     container.appendChild(note);
   }
 
-  phase.days.forEach(day => {
+  // 7-Tage-Woche aus WEEK_STRUCTURE
+  WEEK_STRUCTURE.forEach(slot => {
+    if (slot.type === 'rest') {
+      // Pausentag
+      const el = document.createElement('div');
+      el.className = 'day-block rest-day';
+      el.innerHTML = `
+        <div class="day-header rest-header">
+          <div>
+            <div class="day-number">${slot.label}</div>
+            <div class="day-name rest-label">Pause</div>
+          </div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18" style="color:var(--muted)">
+            <path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
+          </svg>
+        </div>
+        <div class="rest-hint">10–15 min leichte Mobilität & Dehnung + Spaziergang. Kein Widerstandstraining, nichts bis zur Grenze. Bewegung als Erholung.</div>
+      `;
+      container.appendChild(el);
+      return;
+    }
+
+    // Trainingstag
+    const day = phase.days.find(d => d.dayNumber === slot.dayNumber);
+    if (!day) return;
+
     const block = document.createElement('div');
     block.className = 'day-block';
     block.dataset.day = day.dayNumber;
@@ -277,7 +302,7 @@ function renderTraining() {
     block.innerHTML = `
       <div class="day-header">
         <div>
-          <div class="day-number">Tag ${day.dayNumber}</div>
+          <div class="day-number">${slot.label}</div>
           <div class="day-name">${day.name}</div>
         </div>
         <svg class="day-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
@@ -289,7 +314,7 @@ function renderTraining() {
 
     block.querySelector('.day-header').addEventListener('click', () => {
       const isOpen = block.classList.contains('open');
-      document.querySelectorAll('.day-block').forEach(b => b.classList.remove('open'));
+      document.querySelectorAll('.day-block:not(.rest-day)').forEach(b => b.classList.remove('open'));
       if (!isOpen) {
         block.classList.add('open');
         renderDayContent(day, document.getElementById('day-content-' + day.dayNumber));
@@ -303,7 +328,35 @@ function renderTraining() {
 function renderDayContent(day, container) {
   container.innerHTML = '';
 
-  day.exercises.forEach(ex => {
+  // Warm-up-Block (aufklappbar)
+  if (day.warmup && day.warmup.length > 0) {
+    const warmupSection = document.createElement('div');
+    warmupSection.className = 'warmup-section';
+    warmupSection.innerHTML = `
+      <button class="warmup-toggle" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14v-4H7l5-8v4h4l-5 8z"/></svg>
+        <span>Aufwärmen</span>
+        <svg class="warmup-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <ul class="warmup-list" hidden>
+        ${day.warmup.map(item => `<li>${item}</li>`).join('')}
+      </ul>
+    `;
+    warmupSection.querySelector('.warmup-toggle').addEventListener('click', (e) => {
+      const btn = e.currentTarget;
+      const list = warmupSection.querySelector('.warmup-list');
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      list.hidden = expanded;
+      warmupSection.classList.toggle('open', !expanded);
+    });
+    container.appendChild(warmupSection);
+  }
+
+  // Übungen nach Priorität sortieren (1=Anker, 2=Sekundär, 3=Isolation/Core)
+  const sortedExercises = [...day.exercises].sort((a, b) => (a.priority ?? 9) - (b.priority ?? 9));
+
+  sortedExercises.forEach(ex => {
     const item = document.createElement('div');
     item.className = 'exercise-item';
     item.id = 'exercise-' + ex.id;
