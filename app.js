@@ -325,6 +325,37 @@ function renderTraining() {
   });
 }
 
+function buildRampHtml(ramp, workingWeight) {
+  const rows = ramp.map(s =>
+    `<tr><td>${s.label || s.weight + ' kg'}</td><td>${s.reps} Wdh</td></tr>`
+  ).join('');
+  return `
+    <div class="ramp-block">
+      <div class="ramp-title">Aufwärmrampe → ${workingWeight} kg Arbeitssätze</div>
+      <table class="ramp-table">${rows}</table>
+    </div>`;
+}
+
+function buildCoachingHtml(ex, isFirstHeavy) {
+  const hints = [];
+
+  if (ex.category === 'calisthenics') {
+    hints.push('Hier bis nahe an die Grenze — Versagen ist sicher und erwünscht.');
+  } else if (ex.isAnchor || ex.priority === 1) {
+    hints.push('1–2 Wiederholungen in Reserve lassen — nicht bis zum Versagen. Technik vor Gewicht: bricht die Form, ist der Satz vorbei. 2–3 Min Pause zwischen den schweren Sätzen. Ablassen kontrolliert.');
+    if (ex.id === 'bench') {
+      hints.push('Ohne Fangbügel kein Versagen — Ständer auf Fanghöhe stellen oder 1–2 Wdh Reserve.');
+    }
+  }
+
+  if (isFirstHeavy && ex.progressionType === 'load') {
+    hints.push('Erst rampen, dann arbeiten — siehe Aufwärmgewichte.');
+  }
+
+  if (hints.length === 0) return '';
+  return `<div class="coaching-hints">${hints.map(h => `<p>${h}</p>`).join('')}</div>`;
+}
+
 function renderDayContent(day, container) {
   container.innerHTML = '';
 
@@ -356,6 +387,9 @@ function renderDayContent(day, container) {
   // Übungen nach Priorität sortieren (1=Anker, 2=Sekundär, 3=Isolation/Core)
   const sortedExercises = [...day.exercises].sort((a, b) => (a.priority ?? 9) - (b.priority ?? 9));
 
+  // Erste schwere Langhantel-Übung des Tages (für Rampe + Ramp-Hinweis)
+  const firstHeavy = sortedExercises.find(e => e.isAnchor || (e.priority === 1 && e.category === 'barbell'));
+
   sortedExercises.forEach(ex => {
     const item = document.createElement('div');
     item.className = 'exercise-item';
@@ -364,7 +398,8 @@ function renderDayContent(day, container) {
     const pb = personalBest(state.logs, ex.id);
     const last = lastSessionForExercise(state.logs, ex.id);
     const isLoad = ex.progressionType === 'load';
-    const shouldIncrease = isLoad && shouldIncreaseLoad(state.logs, ex.id, ex.repRange[1], ex.targetSets);
+    const isLeverage = ex.progressionType === 'leverage';
+    const isFirstHeavy = firstHeavy && ex.id === firstHeavy.id;
 
     const badgeClass = ex.isAnchor ? '' : 'kb';
     const badgeLabel = ex.isAnchor ? 'Anker'
@@ -373,6 +408,7 @@ function renderDayContent(day, container) {
       : ex.category === 'core'         ? 'Core'
       : '';
 
+    // Letztes Mal
     let lastTimeHtml = '';
     if (last) {
       const summary = isLoad
@@ -381,8 +417,54 @@ function renderDayContent(day, container) {
       lastTimeHtml = `<div class="last-time">Letztes Mal: <span class="highlight">${summary}</span></div>`;
     }
 
-    const suggestionHtml = shouldIncrease
-      ? `<div class="suggestion">→ +2,5 kg fällig — alle Sätze oben im Fenster</div>` : '';
+    // Empfehlung (Lastprogression)
+    let suggestionHtml = '';
+    let rampHtml = '';
+    if (isLoad) {
+      const rec = loadRecommendation(state.logs, ex);
+      if (rec) {
+        if (rec.type === 'increase') {
+          suggestionHtml = `<div class="suggestion suggestion-up">
+            ✓ Alle Sätze am oberen Ende — nächstes Mal <strong>+${rec.increment} kg → ${rec.nextWeight} kg</strong> (zurück ans untere Fenster-Ende). <span class="suggestion-note">Gilt bei sauberer Ausführung — bei wackliger Form lieber halten.</span>
+          </div>`;
+          if (isFirstHeavy) {
+            const ramp = warmupRamp(rec.nextWeight);
+            if (ramp.length) rampHtml = buildRampHtml(ramp, rec.nextWeight);
+          }
+        } else if (rec.type === 'hold') {
+          suggestionHtml = `<div class="suggestion suggestion-hold">
+            Noch nicht alle Sätze bei ${rec.repMax} Wdh — bleib auf diesem Gewicht, bis du ${rec.targetSets} × ${rec.repMax} sauber schaffst.
+          </div>`;
+          if (isFirstHeavy && rec.workingWeight) {
+            const ramp = warmupRamp(rec.workingWeight);
+            if (ramp.length) rampHtml = buildRampHtml(ramp, rec.workingWeight);
+          }
+        }
+      } else if (isFirstHeavy) {
+        // Kein letztes Mal — leere Ramp trotzdem anbieten wenn PB vorhanden
+        if (pb && pb.weight) {
+          const ramp = warmupRamp(pb.weight);
+          if (ramp.length) rampHtml = buildRampHtml(ramp, pb.weight);
+        }
+      }
+    }
+
+    // Calisthenics-Empfehlung (Hebel-Progression)
+    if (isLeverage) {
+      const lrec = leverageRecommendation(state.logs, ex);
+      if (lrec) {
+        if (lrec.type === 'advance') {
+          suggestionHtml = `<div class="suggestion suggestion-up">
+            ✓ Ziel-Wiederholungen erreicht — nächste Stufe: <strong>Stufe ${lrec.nextLevelNum}: ${lrec.nextLevel}</strong>
+          </div>`;
+        } else if (lrec.type === 'mastered') {
+          suggestionHtml = `<div class="suggestion suggestion-up">✓ Höchste Stufe gemeistert.</div>`;
+        }
+      }
+    }
+
+    // Coaching-Hinweise
+    const coachingHtml = buildCoachingHtml(ex, isFirstHeavy);
 
     item.innerHTML = `
       <div class="exercise-header">
@@ -394,6 +476,8 @@ function renderDayContent(day, container) {
       </div>
       ${lastTimeHtml}
       ${suggestionHtml}
+      ${rampHtml}
+      ${coachingHtml}
       <div class="sets-area" id="sets-${ex.id}"></div>
     `;
 
