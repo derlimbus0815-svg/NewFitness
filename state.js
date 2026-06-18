@@ -174,7 +174,7 @@ function buildPhases() {
           exercises: [
             { id: 'ohp',         name: 'Langhantel Overhead Press',             category: 'barbell',      isAnchor: true,  priority: 1, progressionType: 'load',     targetSets: 4, repRange: [6, 8],   notes: 'Anker.' },
             { id: 'pullup',      name: 'Klimmzüge mit Zusatzgewicht',           category: 'calisthenics', isAnchor: false, priority: 2, progressionType: 'load',     targetSets: 4, repRange: [4, 8],   notes: 'Last-Progression.' },
-            { id: 'lunges',      name: 'Gehende Ausfallschritte',               category: 'kettlebell',   isAnchor: false, priority: 3, progressionType: 'load',     targetSets: 3, repRange: [10, 15], notes: 'Leicht, kontrolliert.' },
+            { id: 'lateral-raise',name: 'Seitheben (Kettlebell)',               category: 'kettlebell',   isAnchor: false, priority: 3, progressionType: 'load',     targetSets: 3, repRange: [12, 20], notes: 'Mittlere Schulter. Kontrolliert, kein Schwung.', fixedEquipment: true },
             { id: 'plank',       name: 'Plank-Variationen',                     category: 'core',         isAnchor: false, priority: 3, progressionType: 'leverage', targetSets: 3, repRange: [30, 60], notes: 'Sekunden je Satz.' },
           ],
         },
@@ -260,8 +260,7 @@ function buildPhases() {
           exercises: [
             { id: 'ohp',          name: 'Langhantel Overhead Press',            category: 'barbell',      isAnchor: true,  priority: 1, progressionType: 'load',     targetSets: 4, repRange: [6, 8],   notes: 'Anker.' },
             { id: 'pullup',       name: 'Klimmzüge mit Zusatzgewicht',          category: 'calisthenics', isAnchor: false, priority: 2, progressionType: 'load',     targetSets: 4, repRange: [4, 8],   notes: '' },
-            { id: 'lunges',       name: 'Gehende Ausfallschritte',              category: 'kettlebell',   isAnchor: false, priority: 3, progressionType: 'load',     targetSets: 3, repRange: [10, 15], notes: 'Kontrolliert.' },
-            { id: 'lateral-raise',name: 'Seitheben (Kettlebell)',               category: 'kettlebell',   isAnchor: false, priority: 3, progressionType: 'load',     targetSets: 4, repRange: [12, 15], notes: 'Mittlere Schulter.' },
+            { id: 'lateral-raise',name: 'Seitheben (Kettlebell)',               category: 'kettlebell',   isAnchor: false, priority: 3, progressionType: 'load',     targetSets: 4, repRange: [12, 20], notes: 'Mittlere Schulter. Kontrolliert, kein Schwung.', fixedEquipment: true },
             { id: 'plank',        name: 'Plank-Variationen',                    category: 'core',         isAnchor: false, priority: 3, progressionType: 'leverage', targetSets: 3, repRange: [30, 60], notes: 'Eine Stufe schwerer als Block 1.' },
           ],
         },
@@ -339,8 +338,7 @@ function buildPhases() {
           exercises: [
             { id: 'ohp',          name: 'Langhantel Overhead Press',             category: 'barbell',      isAnchor: true,  priority: 1, progressionType: 'load',     targetSets: 5, repRange: [3, 5],   notes: 'Anker. Nahe Maximum.' },
             { id: 'pullup',       name: 'Klimmzüge mit Zusatzgewicht',          category: 'calisthenics', isAnchor: false, priority: 2, progressionType: 'load',     targetSets: 5, repRange: [3, 6],   notes: 'Nahe Maximum.' },
-            { id: 'lunges',       name: 'Gehende Ausfallschritte',               category: 'kettlebell',   isAnchor: false, priority: 3, progressionType: 'load',     targetSets: 3, repRange: [8, 12],  notes: 'Moderat.' },
-            { id: 'lateral-raise',name: 'Seitheben (Kettlebell)',                category: 'kettlebell',   isAnchor: false, priority: 3, progressionType: 'load',     targetSets: 3, repRange: [10, 15], notes: '' },
+            { id: 'lateral-raise',name: 'Seitheben (Kettlebell)',                category: 'kettlebell',   isAnchor: false, priority: 3, progressionType: 'load',     targetSets: 3, repRange: [12, 20], notes: 'Mittlere Schulter. Kontrolliert, kein Schwung.', fixedEquipment: true },
             { id: 'plank',        name: 'Plank-Variationen',                    category: 'core',         isAnchor: false, priority: 3, progressionType: 'leverage', targetSets: 3, repRange: [30, 60], notes: 'Schwerste Stufe.' },
           ],
         },

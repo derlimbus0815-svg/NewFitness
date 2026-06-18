@@ -444,7 +444,9 @@ function renderDayContent(day, container) {
     // Empfehlung (Lastprogression)
     let suggestionHtml = '';
     let rampHtml = '';
-    if (isLoad) {
+    if (isLoad && ex.fixedEquipment) {
+      suggestionHtml = `<div class="suggestion suggestion-hold">Last durch dein Equipment begrenzt — steigere über Wiederholungen. Am oberen Ende des Fensters über langsameres Tempo, kurze Pausen am Umkehrpunkt oder einen Zusatzsatz weitergehen. Moderat und kontrolliert, kein Schwung.</div>`;
+    } else if (isLoad) {
       const rec = loadRecommendation(state.logs, ex);
       if (rec) {
         if (rec.type === 'increase') {
