@@ -146,16 +146,23 @@
 
     /* ---- Pausentag ---- */
     .day-block.rest-day { opacity: .7; }
-    .day-block.rest-day .day-header { cursor: default; }
-    .day-block.rest-day .day-header:hover { background: none; }
+    .day-block.rest-day .day-header { cursor: pointer; }
     .rest-label { color: var(--muted); font-style: italic; }
-    .rest-hint {
+    .rest-routine {
       padding: 10px var(--gap) 14px;
-      font-size: 13px;
-      color: var(--muted);
       border-top: 1px solid var(--border);
-      line-height: 1.5;
     }
+    .rest-intro { font-size: 13px; color: var(--muted); margin: 0 0 10px; line-height: 1.5; }
+    .rest-section { margin-bottom: 10px; }
+    .rest-section:last-child { margin-bottom: 0; }
+    .rest-section-title {
+      font-size: 11px; text-transform: uppercase; letter-spacing: .5px;
+      color: var(--text); margin-bottom: 5px;
+    }
+    .rest-section-note { font-size: 10px; color: var(--muted); text-transform: none; letter-spacing: 0; }
+    .rest-list { margin: 0; padding-left: 16px; }
+    .rest-list li { font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .rest-note { font-size: 11px; opacity: .7; }
 
     /* ---- Warm-up-Block ---- */
     .warmup-section { border-bottom: 1px solid var(--border); }
@@ -535,8 +542,8 @@
 </nav>
 
 <!-- Skripte -->
-<script src="state.js?v=4"></script>
-<script src="calc.js?v=4"></script>
-<script src="app.js?v=4"></script>
+<script src="state.js?v=5"></script>
+<script src="calc.js?v=5"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

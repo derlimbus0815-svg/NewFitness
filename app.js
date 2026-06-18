@@ -281,12 +281,36 @@ function renderTraining() {
             <div class="day-number">${slot.label}</div>
             <div class="day-name rest-label">Pause</div>
           </div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18" style="color:var(--muted)">
-            <path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>
+          <svg class="day-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <polyline points="6 9 12 15 18 9"/>
           </svg>
         </div>
-        <div class="rest-hint">10–15 min leichte Mobilität & Dehnung + Spaziergang. Kein Widerstandstraining, nichts bis zur Grenze. Bewegung als Erholung.</div>
+        <div class="rest-routine" style="display:none">
+          <p class="rest-intro">Spaziergang — 10–15 min. Danach im Warmen dehnen und kurz mobilisieren. Optional, leicht, kein Training.</p>
+          <div class="rest-section">
+            <div class="rest-section-title">Dehnen <span class="rest-section-note">je ca. 30 s halten</span></div>
+            <ul class="rest-list">
+              <li>Hüftbeuger / Couch Stretch (hinterer Fuß erhöht) — je Seite</li>
+              <li>Wadendehnung an der Wand — je Seite</li>
+            </ul>
+          </div>
+          <div class="rest-section">
+            <div class="rest-section-title">Bewegung &amp; Stabilität <span class="rest-section-note">leicht</span></div>
+            <ul class="rest-list">
+              <li>Katze-Kuh — 8–10 Wdh <span class="rest-note">Wirbelsäule</span></li>
+              <li>Glute Bridge — 10 Wdh <span class="rest-note">Gesäß, gegen das Sitzen, fürs Knie</span></li>
+              <li>Bird Dog — 6–8 je Seite <span class="rest-note">Rumpf- und Schulterblattstabilität</span></li>
+              <li>Wall Slides — 8–10 <span class="rest-note">Schulterblattkontrolle</span></li>
+              <li>Einbeinstand — 20–30 s je Seite <span class="rest-note">Knie, Sprunggelenk, Gleichgewicht</span></li>
+            </ul>
+          </div>
+        </div>
       `;
+      el.querySelector('.rest-header').addEventListener('click', () => {
+        const isOpen = el.classList.contains('open');
+        el.classList.toggle('open', !isOpen);
+        el.querySelector('.rest-routine').style.display = isOpen ? 'none' : 'block';
+      });
       container.appendChild(el);
       return;
     }
